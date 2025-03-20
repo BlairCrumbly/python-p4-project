@@ -1,0 +1,203 @@
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+
+  .TaskList {
+    text-align: center;
+  }
+  .TaskList ul{
+    list-style-type: none;
+    
+  }
+
+
+  .search-bar-container {
+    
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10%; 
+}
+
+
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    
+}
+
+
+.taskcard {
+  list-style-type: none;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+  width: 500px;
+  opacity: 1;
+  transition: opacity 2s ease-in-out, transform 2s ease-in-out; /* Ensure transition is here */
+  padding: 25px;
+}
+
+.taskcard:hover{
+  transform: scale(1.05);
+  
+}
+
+
+.crossed-out {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  color: rgb(55, 151, 45);
+  transition: text-decoration 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+
+.fade-out {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+
+.fade-in {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+
+
+
+
+
+.task-checkbox {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px double #000000;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.task-checkbox:hover {
+  background-color: #3ebd77;
+  
+}
+
+.task-checkbox:checked {
+  background-color: #3ebd77;
+  
+}
+
+.task-checkbox:checked:hover {
+  background-color: #f36565;
+  
+  
+}
+
+.arrows{
+    cursor: pointer;
+    position: absolute;
+    left: 30px;
+    top: 20%;
+    padding: 10px;
+}
+
+.task-details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.4s ease-in-out;
+  
+  
+}
+
+.task-details.open {
+  max-height: 200px; 
+  opacity: 1;
+  padding-top: 10px;
+}
+
+.task-details.closed{
+  padding-top: 10px;
+}
+
+.TaskList ul li p{
+  width: 80%;
+  margin: auto;
+}
+
+.priority-strip {
+  width: 15px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 0px;
+}
+
+.red .priority-strip {
+  background-color: rgb(255, 76, 76);
+}
+.yellow .priority-strip {
+  background-color: rgb(255, 206, 61);
+}
+.green .priority-strip {
+  background-color: rgb(45, 214, 82);
+}
+.overdue .priority-strip {
+  background-color: rgb(200, 0, 0);
+  color: red;
+  font-weight: bold;
+}
+
+.DropDowns select{
+  color: rgb(255, 255, 255);
+  background-color: #009747;
+  padding: 10px;
+  border-radius: 12px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-style: none;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.DropDowns select:hover{
+  background-color: #18b05f;
+}
+
+.switch-label {
+  margin-right: 2020px;
+}
+
+.no-results-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  margin: 0;
+}

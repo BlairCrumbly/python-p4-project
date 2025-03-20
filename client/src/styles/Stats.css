@@ -1,0 +1,18 @@
+.pieChart {
+
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  margin-right: 100vw;  
+}
+.statistics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.MuiPaper-root {
+  margin-bottom: 20px;
+}
+  

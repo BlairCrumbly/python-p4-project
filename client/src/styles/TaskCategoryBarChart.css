@@ -1,0 +1,65 @@
+/* TaskCategoryBarChart.css */
+
+/* Wrapper for the Paper component */
+.chart-paper {
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title styling */
+  .chart-title {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+  
+  /* Container for the bar chart */
+  .chart-container {
+    width: 80%;   /* Shrinks the chart to 80% of its parent container */
+    height: 300px; /* Shrinks the chart height */
+    margin: 0 auto; /* Centers the chart */
+  }
+  
+  /* Ensures the chart fills its container */
+  .recharts-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Styling for the individual bars in the chart */
+  .recharts-bar-rectangles .recharts-bar-rectangle {
+    fill: #4caf50; /* Green color for the bars */
+  }
+  
+  /* Tooltip styling */
+  .recharts-tooltip-wrapper {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
+  .recharts-tooltip-item {
+    color: #fff;
+  }
+  
+  /* Adjust chart legend position */
+  .recharts-legend {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Responsive layout for small screen sizes */
+  @media (max-width: 768px) {
+    .chart-container {
+      width: 95%;
+    }
+  
+    .chart-paper {
+      padding: 15px;
+    }
+  }
+  
