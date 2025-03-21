@@ -22,6 +22,7 @@ def upgrade():
         batch_op.drop_index('ix_users_email')
         batch_op.create_index(batch_op.f('ix_users_email'), ['email'], unique=True)
 
+
     # ### end Alembic commands ###
 
 

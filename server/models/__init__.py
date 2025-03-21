@@ -1,5 +1,7 @@
 from .user import User
 from .klass import Klass
 from .task import Task
-from .user_class import UserClass
+from .category_tasks import CategoryTask
+from .categories import Category
+
 

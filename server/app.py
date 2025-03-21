@@ -7,7 +7,7 @@ from flask import request
 from flask_restful import Resource
 # Local imports
 from config import app, db, api
-from models import User, Klass, Task, UserClass
+from models import User, Klass, Task, CategoryTask, Category
 # Add your model imports
 
 
