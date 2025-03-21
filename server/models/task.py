@@ -9,6 +9,7 @@ class Task(db.Model):
     due_date = db.Column(db.DateTime, nullable=False)
     completed = db.Column(db.DateTime, nullable=True)
 
+    #! relationships
     # tasks relationship to categories through category_tasks
     categories = db.relationship('Category', secondary='category_tasks', back_populates='tasks')
     # many part of one class having many tasks
