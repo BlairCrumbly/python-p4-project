@@ -11,9 +11,11 @@ class Task(db.Model):
 
     #! relationships
     # tasks relationship to categories through category_tasks
-    categories = db.relationship('Category', secondary='category_tasks', back_populates='tasks')
-    # many part of one class having many tasks
-    class_id = db.Column(db.Integer, ForeignKey='classes.id', back_populates='tasks', nullable=False)
+    categories = db.relationship('Category', secondary='category_tasks', back_populates='tasks', cascade='all, delete-orphan')
+    #* many part of one class having many tasks, 
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
+    #* one class has many tasks
+    klass = db.relationship('Klass', back_populates='tasks')
 
 
     def __repr__(self):

@@ -3,5 +3,6 @@ from .klass import Klass
 from .task import Task
 from .category_tasks import CategoryTask
 from .categories import Category
+from config import db
 
 
