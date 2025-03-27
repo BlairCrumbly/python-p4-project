@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Welcome, {user?.username}!</h1>
+      <h1>Welcome, {user.username}</h1>
       <p>Dashboard: Overview of tasks and classes</p>
       <button onClick={() => logout(navigate("/login"))}>Logout</button>
     </div>

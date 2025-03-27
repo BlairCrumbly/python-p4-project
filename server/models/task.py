@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from config import db
+from sqlalchemy_serializer import SerializerMixin
 
-class Task(db.Model):
+class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=True, nullable=False)
@@ -16,7 +17,7 @@ class Task(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
     #* one class has many tasks
     klass = db.relationship('Klass', back_populates='tasks')
-
+    serialize_rules = ('-klass.tasks',)
 
     def __repr__(self):
         return f'<Task {self.title}>'

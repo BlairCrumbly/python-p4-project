@@ -1,6 +1,8 @@
 from config import db
+from sqlalchemy_serializer import SerializerMixin
 
-class Klass(db.Model):
+
+class Klass(db.Model, SerializerMixin):
     __tablename__ = 'classes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
@@ -14,6 +16,6 @@ class Klass(db.Model):
     #*many tasks belong to one class
     #one to many
     tasks = db.relationship("Task", back_populates='klass', cascade='all, delete-orphan')
-
+    
     def __repr__(self):
         return f'<Klass {self.name}:{self.id}>'
