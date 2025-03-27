@@ -34,7 +34,7 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
 
       <div className="task-header">
         <strong className={task.addingLineThrough ? "crossed-out" : ""} style={{ marginRight: '10px' }}>
-          {task.name}
+          {task.title}
         </strong>- {task.dueDate}
 
         <input

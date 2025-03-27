@@ -1,19 +1,34 @@
 // auth.js
 
-const API_URL = "http://127.0.0.1:5555";
+
 
 async function fetchWithCSRF(url, options = {}) {
+  // Remove the 'Content-Type' header for GET requests since they don't need a request body
+  const headers = options.method === "GET"
+    ? { ...options.headers }  // Don't include Content-Type for GET requests
+    : {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCSRFToken(),
+        ...(options.headers || {}),
+      };
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-TOKEN": getCSRFToken(),  // Add CSRF Token manually
-      ...(options.headers || {}),
-    },
-    credentials: "include",  // Ensures cookies are sent with the request
+    headers,
+    credentials: "include",  //! ensure cookies are sent
   });
+
+  if (response.status === 401) {
+    alert("Your session has expired. Please log in again.");
+    window.location.href = "/login";
+    return;
+  }
+
   return response.json();
 }
+
+
+
 
 function getCSRFToken() {
   return document.cookie
@@ -23,38 +38,62 @@ function getCSRFToken() {
 }
 
 export async function login(values) {
-  return fetchWithCSRF(`${API_URL}/login`, {
+  return fetchWithCSRF(`/login`, {
     method: "POST",
     body: JSON.stringify(values),
   });
 }
 
 export async function register(values) {
-  return fetchWithCSRF(`${API_URL}/register`, {
+  return fetchWithCSRF(`/register`, {
     method: "POST",
     body: JSON.stringify(values),
   });
 }
 
 export async function logout() {
-  return fetchWithCSRF(`${API_URL}/logout`, { method: "DELETE" });
+  return fetchWithCSRF(`/logout`, { method: "DELETE" });
 }
 
 export async function getClasses() {
-    return fetchWithCSRF(`${API_URL}/classes`, {
-        method: "GET",
+  try {
+    const response = await fetchWithCSRF(`/classes`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCSRFToken(),
+      },
+      credentials: "include",
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error ${response.status}: ${errorData.message || "Unknown error"}`);
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid data format: Expected an array");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching classes:", error);
+    throw error;
   }
+}
+
 
 export async function createClass(values) {
-    return fetchWithCSRF(`${API_URL}/classes`, {
+    return fetchWithCSRF(`/classes`, {
         method: "POST",
         body: JSON.stringify(values),
     });
 }
 
 export async function deleteClass(klassId) {
-    return fetchWithCSRF(`${API_URL}/classes/${klassId}`, {
+    return fetchWithCSRF(`/classes/${klassId}`, {
         method: "DELETE",
     });
 }
+

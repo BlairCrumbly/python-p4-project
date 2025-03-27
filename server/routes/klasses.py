@@ -6,18 +6,20 @@ from models import Klass, User
 from flask import make_response
 
 
+from flask_jwt_extended import get_jwt_identity
+
 class KlassResource(Resource):
     @jwt_required()
     def get(self):
-        """
-        Get all classes for the authenticated user
-        """
         try:
             current_user_id = get_jwt_identity()
+            print(f"Authenticated User ID: {current_user_id}")  # Log the user ID for debugging
             user_classes = Klass.query.filter_by(user_id=current_user_id).all()
             return [klass.to_dict() for klass in user_classes], 200
         except Exception as e:
+            print(f"Error: {str(e)}")  # Log the error
             return {"message": f"Error retrieving classes: {str(e)}"}, 500
+
 
     @jwt_required()
     def post(self):

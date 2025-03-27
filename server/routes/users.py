@@ -52,24 +52,17 @@ class Register(Resource):
 
 
 class Login(Resource):
-    """
-        Handles user login.
-        - Checks if the username exists.
-        - Verifies the password.
-        - Returns a JWT access token on success.
-    """
     def post(self):
         data = request.get_json()
         user = User.query.filter_by(username=data['username']).first()
         
         if user and user.check_password(data['password']):
             access_token = create_access_token(identity=user.id)
-
-            response = make_response(user.to_dict(),200)
+            response = make_response(user.to_dict(), 200)
             set_access_cookies(response, access_token)
+            #print("Setting cookie:", response.headers.get("Set-Cookie"))  # Debugging
             return response
         
-        return {'message': 'Invalid credentials'}, 401
     
 
 class Logout(Resource):
@@ -97,6 +90,17 @@ class UserProfile(Resource):
         current_user_id = get_jwt_identity()
         user = User.query.get_or_404(current_user_id)
         return user.to_dict(), 200
+
+class CheckUser(Resource):
+    @jwt_required()
+    def get(self):
+        """
+        Get the current user's profile
+        Requires a valid JWT token
+        """
+        current_user_id = get_jwt_identity()
+        user = User.query.get_or_404(current_user_id)
+        return user.to_dict(), 200
     
 
 
@@ -105,3 +109,4 @@ api.add_resource(Register, '/register')
 api.add_resource(Login, '/login')
 api.add_resource(UserProfile, '/profile')
 api.add_resource(Logout, '/logout')
+api.add_resource(CheckUser, '/check-user')

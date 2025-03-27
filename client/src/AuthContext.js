@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
       setUser(storedUser); // Set the user from localStorage
     } else {
       // If no user in localStorage, fetch user profile from backend
-      fetch("http://127.0.0.1:5555/profile", {
+      fetch("/profile", {
         credentials: "include",
       })
         .then((res) => (res.ok ? res.json() : null))
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    fetch("http://127.0.0.1:5555/logout", {
+    fetch("/logout", {
       method: "DELETE",
       credentials: "include",
     })
@@ -43,8 +43,10 @@ export function AuthProvider({ children }) {
       .catch(() => setUser(null));
   };
 
+  const updateuser = (value) => setUser(value)
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateuser }}>
       {children}
     </AuthContext.Provider>
   );

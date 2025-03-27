@@ -10,7 +10,9 @@ import Statistics from "./components/Statistics";
 import AuthPage from "./components/AuthPage"; // Import login/register component
 import Dashboard from "./components/Dashboard"; // New dashboard component
 import ProtectedRoute from "./components/ProtectedRoute"; // Protect access
-
+import ClassList from "./components/ClassList"; // Import ClassList component
+import CreateClassForm from "./components/CreateClassForm";
+import TaskDisplay from "./components/TaskDisplay";
 const router = createBrowserRouter([
   { path: "/login", element: <AuthPage /> },
   {
@@ -22,9 +24,14 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Dashboard /> }, // Show Dashboard instead of tasks first
+      { path: "/my-classes", element: <ClassList /> }, // Add the route for "My Classes"
       { path: "/tasks", element: <TaskList /> }, // Tasks only available after login
       { path: "/tasks/new", element: <AddTaskForm /> },
       { path: "/statistics", element: <Statistics /> },
+      { path: "/classes", element: <ClassList /> },  // Add this route to display all classes
+      { path: "/classes/new", element: <CreateClassForm /> },  // If you still want a form for creating classes
+      
+      { path: "/tasks/:klassId", element: <TaskDisplay /> }
     ],
   },
 ]);

@@ -11,6 +11,7 @@ const validationSchema = Yup.object({
 
 export default function CreateClassForm() {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state for form submission
 
   const formik = useFormik({
     initialValues: {
@@ -20,6 +21,7 @@ export default function CreateClassForm() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        setLoading(true);  // Set loading to true
         const data = await createClass(values);  // Call createClass function to create a class
         if (data.id) {
           setMessage("Class created successfully!");  // Success message
@@ -27,7 +29,9 @@ export default function CreateClassForm() {
           setMessage(data.message || "Failed to create class.");
         }
       } catch (error) {
-        setMessage("Error creating class");  // Error handling
+        setMessage("Error creating class: " + error.message);  // Show detailed error message
+      } finally {
+        setLoading(false);  // Reset loading state
       }
     },
   });
@@ -45,6 +49,7 @@ export default function CreateClassForm() {
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            disabled={loading}  // Disable input during loading
           />
           {formik.touched.name && formik.errors.name && (
             <p>{formik.errors.name}</p>  // Show validation error if any
@@ -59,13 +64,16 @@ export default function CreateClassForm() {
             value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            disabled={loading}  // Disable input during loading
           />
           {formik.touched.description && formik.errors.description && (
             <p>{formik.errors.description}</p>  // Show validation error if any
           )}
         </div>
 
-        <button type="submit">Create Class</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Create Class"}  // Show loading text on button
+        </button>
       </form>
 
       {message && <p>{message}</p>}  // Display success or error message

@@ -15,7 +15,7 @@ class TaskResource(Resource):
         try:
             current_user_id = get_jwt_identity()
 
-            #! If klass_id is provided, filter tasks by class_id and user_id through the Klass relationship
+            # If klass_id is provided, filter tasks by class_id and user_id through the Klass relationship
             if klass_id:
                 tasks = Task.query.filter(Task.class_id == klass_id, Klass.user_id == current_user_id).all()
             else:
@@ -89,7 +89,8 @@ class TaskDetailResource(Resource):
                 task.due_date = datetime.strptime(due_date_str, "%Y-%m-%dT%H:%M:%S")  # Try ISO format
             except ValueError:
                 task.due_date = datetime.strptime(due_date_str, "%Y-%m-%d %H:%M:%S")  # Fallback to other format
-             # Handle completion
+             
+            # Handle completion
             if data.get('completed') is not None:  # Mark as completed
                 task.completed = datetime.now() if data['completed'] else None  # Set completed time if True, else None
             db.session.commit()
@@ -123,6 +124,36 @@ class TaskDetailResource(Resource):
             return {"message": f"Error deleting task: {str(e)}"}, 500
 
 
+class TaskCompleteResource(Resource):
+    @jwt_required()
+    def patch(self, task_id):
+        """
+        Mark a task as completed or incomplete
+        """
+        try:
+            data = request.get_json()
+            current_user_id = get_jwt_identity()
+            task = Task.query.filter_by(id=task_id).join(Klass).filter(Klass.user_id == current_user_id).first()
+
+            if not task:
+                return {'message': 'Task not found or you do not have permission'}, 404
+
+            # If the data contains a completed status, update the task
+            if 'completed' in data:
+                if data['completed']:
+                    task.completed = datetime.now()  # Mark as completed
+                else:
+                    task.completed = None  # Mark as incomplete
+            db.session.commit()
+
+            return task.to_dict(), 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f"Error updating task completion: {str(e)}"}, 500
+
+
 # Register the routes
 api.add_resource(TaskResource, '/tasks', '/tasks/<int:klass_id>')  # Fetch tasks by class_id or for all classes
 api.add_resource(TaskDetailResource, '/tasks/<int:task_id>')  # For updating and deleting individual tasks
+api.add_resource(TaskCompleteResource, '/tasks/<int:task_id>/complete')  # New route for task completion

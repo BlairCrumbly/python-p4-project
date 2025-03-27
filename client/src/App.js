@@ -1,13 +1,31 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import {AuthContext} from "./AuthContext";
+
 
 
 function App() {
+  const navigate = useNavigate()
+const {updateUser} = useContext(AuthContext)
+  useEffect(() => {
+    fetch('/check-user')
+    .then((response) =>{
+      if (response.ok){
+        response.json().then(updateUser)
+        .then(() => navigate("/"))
+      }
+      else{
+        console.log("You must login")
+      }
+    })
+    .catch(console.log)
+  },[])
+
   const [tasks, setTasks] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:3001/tasks")
+    fetch("/tasks")
       .then((response) => response.json())
       .then((data) => {
         // !s ort the tasks by dueDate and estimatedTime when they are fetched
@@ -47,7 +65,7 @@ const handleTaskCompletion = (taskId, completed) => {
   );
 
   setTimeout(() => {
-    fetch(`http://localhost:3001/tasks/${taskId}`, {
+    fetch(`/tasks/${taskId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

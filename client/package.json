@@ -1,5 +1,6 @@
 {
   "name": "taskr",
+  "proxy": "http://127.0.0.1:5555",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,6 +19,9 @@
     "recharts": "^2.15.1",
     "yup": "^1.6.1"
   },
+  
+  
+
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -48,3 +52,4 @@
     "web-vitals": "^4.2.4"
   }
 }
+
