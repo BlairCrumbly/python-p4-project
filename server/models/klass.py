@@ -13,7 +13,7 @@ class Klass(db.Model):
 
     #*many tasks belong to one class
     #one to many
-    tasks = db.relationship("Task", back_populates='classes', cascade='all, delete-orphan')
+    tasks = db.relationship("Task", back_populates='klass', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Klass {self.name}:{self.id}>'

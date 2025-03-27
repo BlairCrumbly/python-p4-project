@@ -2,8 +2,8 @@ from flask import request, jsonify
 from flask_restful import Resource
 from config import app, db, api
 from models import User
-from flask_jwt_extended import create_access_token
-
+from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, get_jwt_identity, unset_jwt_cookies
+from flask import make_response
 
 
 class Register(Resource):
@@ -22,26 +22,34 @@ class Register(Resource):
         except Exception as e:
             return {'message': f'Invalid JSON format: {str(e)}'}, 400
         
-        #! Check if user already exists
-        existing_user = User.query.filter(
-            (User.username == data['username']) | 
-            (User.email == data['email'])
-        ).first()
+
         
-        if existing_user:
-            return {'message': 'Username or email already exists'}, 400
+
 
  #! Create new user
-        new_user = User(
-            username=data['username'],
-            email=data['email']
-        )
-        new_user.set_password(data['password'])  #! Hash and set password
+        try:
+            new_user = User(
+                username=data['username'],
+                email=data['email']
+            )
+            new_user.set_password(data['password'])  #! Hash and set password
         
-        db.session.add(new_user)
-        db.session.commit()
         
-        return {'message': 'User created successfully'}, 201
+            db.session.add(new_user)
+            db.session.commit()
+            
+            #! Generate access token
+            access_token = create_access_token(identity=new_user.id)
+            
+            response = make_response(new_user.to_dict(),201)
+            set_access_cookies(response, access_token)
+            return response
+
+        except Exception as e:
+            
+            return {'message': f'Error creating user: {str(e)}'}, 500
+
+
 
 class Login(Resource):
     """
@@ -56,23 +64,44 @@ class Login(Resource):
         
         if user and user.check_password(data['password']):
             access_token = create_access_token(identity=user.id)
-            return {
-                'access_token': access_token,
-                'user_id': user.id,
-                'username': user.username
-            }, 200
+
+            response = make_response(user.to_dict(),200)
+            set_access_cookies(response, access_token)
+            return response
         
         return {'message': 'Invalid credentials'}, 401
     
 
+class Logout(Resource):
+    @jwt_required()
+    def delete(self):
+        """
+        Handles user logout.
+        - Requires a valid JWT token.
+        - Unsets the JWT cookies.
+        """
+        response = make_response('', 204)
+        unset_jwt_cookies(response)
+        return response
 
-    def delete(self, user_id):
-        # DELETE a user
-        user = User.query.get_or_404(user_id)
-        db.session.delete(user)
-        db.session.commit()
-        return '', 204
+
+
+#! Protected Route
+class UserProfile(Resource):
+    @jwt_required()
+    def get(self):
+        """
+        Get the current user's profile
+        Requires a valid JWT token
+        """
+        current_user_id = get_jwt_identity()
+        user = User.query.get_or_404(current_user_id)
+        return user.to_dict(), 200
     
+
+
 # Register the routes
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login')
+api.add_resource(UserProfile, '/profile')
+api.add_resource(Logout, '/logout')

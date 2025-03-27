@@ -9,6 +9,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from datetime import timedelta
+from os import environ
 # Local imports
 
 # Instantiate app, set attributes
@@ -16,7 +18,12 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
+app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_SECRET_KEY"] = environ.get('JWT_SECRET_KEY')  
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
+jwt = JWTManager(app)
 # Define metadata, instantiate db
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -26,10 +33,10 @@ migrate = Migrate(app, db)
 db.init_app(app)
 
 #Init Bcrypt and JWT
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
+flask_bcrypt = Bcrypt(app)
+
 # Instantiate REST API
 api = Api(app)
 
 # Instantiate CORS
-CORS(app)
+CORS(app, supports_credentials=True)

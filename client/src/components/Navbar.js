@@ -54,7 +54,7 @@ const Navbar = ({ totalTasks, completedTasks }) => {
     <nav className={isOpen ? 'open' : ''}>
       <h1 className="taskr-heading">
         <span className="taskr-title">Taskr</span>
-        <span className="material-symbols-outlined">cognition_2</span>
+        {/* <span className="material-symbols-outlined">cognition_2</span> */}
       </h1>
 
       <div>
