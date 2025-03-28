@@ -2,6 +2,7 @@
 
 # Standard library imports
 from random import randint, choice as rc
+from models import Category
 
 # Remote library imports
 from faker import Faker
@@ -14,4 +15,4 @@ if __name__ == '__main__':
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
-        # Seed code goes here!
+        

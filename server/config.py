@@ -11,6 +11,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from os import environ
+
 # Local imports
 
 # Instantiate app, set attributes
@@ -41,3 +42,4 @@ api = Api(app)
 
 # Instantiate CORS
 CORS(app, supports_credentials=True)
+

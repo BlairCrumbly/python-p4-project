@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 const AddTaskForm = () => {
   const [classes, setClasses] = useState([]);
+  const [categories, setCategories] = useState({ type: [], complexity: [] });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -24,7 +25,28 @@ const AddTaskForm = () => {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/categories", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const data = await response.json();
+
+        // Split categories into type and complexity groups
+        const typeCategories = data.filter(category => category.category_type === 'Type');
+        const complexityCategories = data.filter(category => category.category_type === 'Complexity');
+
+        setCategories({ type: typeCategories, complexity: complexityCategories });
+      } catch (error) {
+        setError("Error fetching categories");
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchClasses();
+    fetchCategories();
   }, []);
 
   // Yup Validation Schema
@@ -33,14 +55,24 @@ const AddTaskForm = () => {
     description: Yup.string(),
     dueDate: Yup.date().required('Due date is required'),
     className: Yup.string().required('Class is required'),
+    typeCategoryName: Yup.string().required('Type category is required'),
+    complexityCategoryName: Yup.string().required('Complexity category is required'),
   });
 
   const handleSubmit = async (values) => {
     try {
       const csrfToken = getCookie("csrf_access_token");
       const classData = classes.find((klass) => klass.name === values.className);
+      const typeCategoryData = categories.type.find((category) => category.name === values.typeCategoryName);
+      const complexityCategoryData = categories.complexity.find((category) => category.name === values.complexityCategoryName);
+
       if (!classData) {
         setError("Class not found.");
+        return;
+      }
+
+      if (!typeCategoryData || !complexityCategoryData) {
+        setError("Category not found.");
         return;
       }
 
@@ -51,6 +83,8 @@ const AddTaskForm = () => {
         description: values.description,
         due_date: dueDateWithTime,
         class_id: classData.id,
+        type_category_id: typeCategoryData.id,  // Selected type category ID
+        complexity_category_id: complexityCategoryData.id,  // Selected complexity category ID
       };
 
       const requestHeaders = {
@@ -88,6 +122,8 @@ const AddTaskForm = () => {
           description: '',
           dueDate: '',
           className: '',
+          typeCategoryName: '',  // Single selection for type category
+          complexityCategoryName: '',  // Single selection for complexity category
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -138,6 +174,32 @@ const AddTaskForm = () => {
           </div>
 
           <div>
+            <label htmlFor="typeCategoryName">Select Type Category:</label>
+            <Field as="select" id="typeCategoryName" name="typeCategoryName" required>
+              <option value="">Select a type</option>
+              {categories.type.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="typeCategoryName" component="div" style={{ color: 'red' }} />
+          </div>
+
+          <div>
+            <label htmlFor="complexityCategoryName">Select Complexity Category:</label>
+            <Field as="select" id="complexityCategoryName" name="complexityCategoryName" required>
+              <option value="">Select a complexity</option>
+              {categories.complexity.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="complexityCategoryName" component="div" style={{ color: 'red' }} />
+          </div>
+
+          <div>
             <button type="submit">Add Task</button>
           </div>
         </Form>
@@ -150,6 +212,7 @@ const AddTaskForm = () => {
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
+
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 

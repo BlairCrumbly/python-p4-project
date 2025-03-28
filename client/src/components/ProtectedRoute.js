@@ -1,3 +1,4 @@
+// src/components/ProtectedRoute.js
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
@@ -5,5 +6,11 @@ import { AuthContext } from "../AuthContext";
 export default function ProtectedRoute({ children }) {
   const { user } = useContext(AuthContext);
 
-  return user ? children : <Navigate to="/login" replace />;
+  if (!user) {
+    // Redirect to login if the user is not authenticated
+    return <Navigate to="/login" />;
+  }
+
+  // Allow access to the children (protected routes) if the user is authenticated
+  return children;
 }

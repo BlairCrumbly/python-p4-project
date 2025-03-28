@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from config import db, api
-from models import Task, Klass
+from models import Task, Klass, Category, CategoryTask
 from datetime import datetime
 
 
@@ -24,10 +24,19 @@ class TaskResource(Resource):
             if not tasks:
                 return {"message": "No tasks found for the specified class"}, 404
 
-            return [task.to_dict() for task in tasks], 200
+            # Include categories for each task
+            tasks_with_categories = []
+            for task in tasks:
+                task_data = task.to_dict()
+                task_data['categories'] = [category.name for category in task.categories]  # assuming 'categories' is a relationship
+                tasks_with_categories.append(task_data)
+
+            return tasks_with_categories, 200
+
 
         except Exception as e:
             return {"message": f"Error retrieving tasks: {str(e)}"}, 500
+
 
     @jwt_required()
     def post(self):
@@ -53,11 +62,23 @@ class TaskResource(Resource):
                 description=data.get('description', ''),
                 due_date=datetime.strptime(data['due_date'], "%Y-%m-%dT%H:%M:%S"),
                 class_id=data['class_id'],
-                completed=None  # Default to None unless completed
+                completed=None,  # Default to None unless completed
             )
 
             db.session.add(new_task)
             db.session.commit()
+
+            # Now, insert records into CategoryTask to associate the task with categories
+            if 'type_category_id' in data:
+                type_category_task = CategoryTask(task_id=new_task.id, category_id=data['type_category_id'])
+                db.session.add(type_category_task)
+
+            if 'complexity_category_id' in data:
+                complexity_category_task = CategoryTask(task_id=new_task.id, category_id=data['complexity_category_id'])
+                db.session.add(complexity_category_task)
+
+            db.session.commit()
+
             return new_task.to_dict(), 201
 
         except Exception as e:

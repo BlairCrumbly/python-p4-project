@@ -6,8 +6,6 @@ from models import Klass, User
 from flask import make_response
 
 
-from flask_jwt_extended import get_jwt_identity
-
 class KlassResource(Resource):
     @jwt_required()
     def get(self):

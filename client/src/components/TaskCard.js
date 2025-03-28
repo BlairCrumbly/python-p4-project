@@ -27,7 +27,7 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
       key={task.id}
     >     
         <div onClick={toggleDetails} className='arrows'>
-            {isOpen ? <IoIosArrowUp size={iconSize} /> : <IoIosArrowDown size={iconSize}/>}
+            {isOpen ? <IoIosArrowUp size={iconSize} /> : <IoIosArrowDown size={iconSize}/> }
         </div>
       
       <div className="priority-strip"></div>
@@ -48,6 +48,18 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
       <div className={`task-details ${isOpen ? "open" : "closed"}`}>
         <p>{task.description}</p>
         <span>Estimated Time: {task.estimatedTime} hrs</span>
+
+        {/* Display task categories when the arrow is clicked */}
+        {task.categories && task.categories.length > 0 && (
+          <div className="task-categories">
+            <strong>Categories: </strong>
+            <ul>
+              {task.categories.map((category, index) => (
+                <li key={index}>{category}</li>
+              ))}
+            </ul>
+          </div>
+)}
       </div>
     </li>
   );

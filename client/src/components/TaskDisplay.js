@@ -141,9 +141,9 @@ const TaskDisplay = () => {
   return (
     <div className="centered-container">
       <div className="TaskList">
-        <h1>Tasks for Class: {klassName}</h1>
+        <h1>{klassName}</h1>
         {error && <p style={{ color: "red", border: "1px solid red", padding: "10px" }}>{error}</p>}
-
+  
         {!searchQuery && (
           <div className={`DropDowns ${isMobile ? 'mobile-dropdowns' : ''}`}>
             <select onChange={handleSortByChange}>
@@ -151,7 +151,7 @@ const TaskDisplay = () => {
               <option value="A-Z">Sort by A-Z</option>
               <option value="Z-A">Sort by Z-A</option>
             </select>
-
+  
             <select onChange={handleColorFilterChange}>
               <option value="none">None</option>
               <option value="overdue">Overdue</option>
@@ -159,7 +159,7 @@ const TaskDisplay = () => {
               <option value="yellow">Yellow</option>
               <option value="green">Green</option>
             </select>
-
+  
             <FormControlLabel
               control={<Switch color="secondary" checked={showCompleted} onChange={handleTodoChange} />}
               label="Show completed tasks"
@@ -168,7 +168,7 @@ const TaskDisplay = () => {
             />
           </div>
         )}
-
+  
         <div className="search-bar-container">
           <input
             type="text"
@@ -178,16 +178,29 @@ const TaskDisplay = () => {
             onChange={handleSearchChange}
           />
         </div>
-
+  
         {sortedTasks.length > 0 ? (
           <ul>
             {sortedTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                priorityClass={taskPriorities[task.id]}
-                handleTaskCompletion={handleTaskCompletion} // Pass handleTaskCompletion to TaskCard
-              />
+              <div key={task.id} className="task-container">
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  priorityClass={taskPriorities[task.id]}
+                  handleTaskCompletion={handleTaskCompletion}
+                />
+                {/* Display task categories */}
+                <div className="task-categories">
+                  
+                  <ul>
+                    {task.categories && task.categories.map((category) => (
+                      <li key={category.id}>
+                        <strong>{category.name}</strong> - {category.category_type}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             ))}
           </ul>
         ) : (
@@ -196,6 +209,7 @@ const TaskDisplay = () => {
       </div>
     </div>
   );
+  
 };
 
 const checkStatus = (response) => {
