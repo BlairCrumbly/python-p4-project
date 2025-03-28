@@ -1,19 +1,21 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent } from '@mui/material';
+import '../styles/ClassCard.css'; 
 
 const ClassCard = ({ klass, onClick }) => {
   if (!klass) {
-    return <div>Loading...</div>; // Or return some fallback UI if klass is undefined
+    return <div>Loading...</div>; 
   }
 
   return (
-    <Card onClick={onClick} style={{ cursor: 'pointer' }}>
-      <CardContent>
-        <Typography variant="h5">{klass.name || "Class Name"}</Typography>
-        {/* Add any other details about the class */}
-        <Typography variant="body2" color="textSecondary">
-          {klass.description || "No description available"}
-        </Typography>
+    <Card onClick={onClick} className="class-card">
+      <CardContent className="card-content">
+        <div className="card-top">
+          <h3 className="class-name">{klass.name || "Class Name"}</h3>
+        </div>
+        <div className="card-bottom">
+          <p className="class-description">{klass.description || "No description available"}</p>
+        </div>
       </CardContent>
     </Card>
   );

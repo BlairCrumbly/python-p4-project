@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import "../styles/AddTaskForm.css";
 
 const AddTaskForm = () => {
   const [classes, setClasses] = useState([]);
@@ -83,8 +84,8 @@ const AddTaskForm = () => {
         description: values.description,
         due_date: dueDateWithTime,
         class_id: classData.id,
-        type_category_id: typeCategoryData.id,  // Selected type category ID
-        complexity_category_id: complexityCategoryData.id,  // Selected complexity category ID
+        type_category_id: typeCategoryData.id,
+        complexity_category_id: complexityCategoryData.id,
       };
 
       const requestHeaders = {
@@ -115,15 +116,15 @@ const AddTaskForm = () => {
   return (
     <div>
       <h1>Add New Task</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
       <Formik
         initialValues={{
           title: '',
           description: '',
           dueDate: '',
           className: '',
-          typeCategoryName: '',  // Single selection for type category
-          complexityCategoryName: '',  // Single selection for complexity category
+          typeCategoryName: '',
+          complexityCategoryName: '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -131,33 +132,19 @@ const AddTaskForm = () => {
         <Form>
           <div>
             <label htmlFor="title">Task Title:</label>
-            <Field
-              type="text"
-              id="title"
-              name="title"
-              required
-            />
-            <ErrorMessage name="title" component="div" style={{ color: 'red' }} />
+            <Field type="text" id="title" name="title" required />
+            <ErrorMessage name="title" component="div" className="error-message" />
           </div>
 
           <div>
             <label htmlFor="description">Description:</label>
-            <Field
-              as="textarea"
-              id="description"
-              name="description"
-            />
+            <Field as="textarea" id="description" name="description" />
           </div>
 
           <div>
             <label htmlFor="dueDate">Due Date:</label>
-            <Field
-              type="date"
-              id="dueDate"
-              name="dueDate"
-              required
-            />
-            <ErrorMessage name="dueDate" component="div" style={{ color: 'red' }} />
+            <Field type="date" id="dueDate" name="dueDate" required />
+            <ErrorMessage name="dueDate" component="div" className="error-message" />
           </div>
 
           <div>
@@ -170,7 +157,7 @@ const AddTaskForm = () => {
                 </option>
               ))}
             </Field>
-            <ErrorMessage name="className" component="div" style={{ color: 'red' }} />
+            <ErrorMessage name="className" component="div" className="error-message" />
           </div>
 
           <div>
@@ -183,7 +170,7 @@ const AddTaskForm = () => {
                 </option>
               ))}
             </Field>
-            <ErrorMessage name="typeCategoryName" component="div" style={{ color: 'red' }} />
+            <ErrorMessage name="typeCategoryName" component="div" className="error-message" />
           </div>
 
           <div>
@@ -196,7 +183,7 @@ const AddTaskForm = () => {
                 </option>
               ))}
             </Field>
-            <ErrorMessage name="complexityCategoryName" component="div" style={{ color: 'red' }} />
+            <ErrorMessage name="complexityCategoryName" component="div" className="error-message" />
           </div>
 
           <div>
@@ -208,7 +195,6 @@ const AddTaskForm = () => {
   );
 };
 
-// Helper function to get the CSRF token from cookies
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);

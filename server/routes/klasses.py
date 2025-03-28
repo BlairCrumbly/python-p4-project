@@ -17,7 +17,7 @@ class KlassResource(Resource):
         except Exception as e:
             print(f"Error: {str(e)}")  # Log the error
             return {"message": f"Error retrieving classes: {str(e)}"}, 500
-
+        
 
     @jwt_required()
     def post(self):
@@ -30,11 +30,11 @@ class KlassResource(Resource):
 
             # Validate required fields
             if not data or 'name' not in data:
-                return {'message': 'Class name is required'}, 400
+                return jsonify({'message': 'Class name is required'}), 400
 
             # Check if name is already in use
             if Klass.query.filter_by(name=data['name'], user_id=current_user_id).first():
-                return {'message': 'Class name already exists'}, 400
+                return jsonify({'message': 'Class name already exists'}), 400
 
             # Create new class
             new_class = Klass(
@@ -45,11 +45,21 @@ class KlassResource(Resource):
 
             db.session.add(new_class)
             db.session.commit()
-            response = make_response(new_class.to_dict(), 201)
+
+            # Return the class details as JSON
+            return jsonify(new_class.to_dict()), 201
 
         except Exception as e:
             db.session.rollback()  # Rollback in case of an error
-            return {"message": f"Error creating class: {str(e)}"}, 500
+            return jsonify({"message": f"Error creating class: {str(e)}"}), 500
+
+
+
+
+
+
+
+
 
 
 class KlassDetailResource(Resource):

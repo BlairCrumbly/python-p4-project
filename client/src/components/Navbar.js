@@ -59,9 +59,11 @@ const Navbar = ({ totalTasks, completedTasks }) => {
 
       <div>
         <Link to="/" className="nav-link" onClick={handleLinkClick}>Home</Link>
-        <Link to="/tasks/new" className="nav-link" onClick={handleLinkClick}>+ New Task</Link>
+        <Link to="/classes" className="nav-link" onClick={handleLinkClick}>My Classes</Link>
+        <Link to="/tasks/new" className="nav-link" onClick={handleLinkClick}>Add Task</Link>
+        <Link to="/classes/new" className="nav-link" onClick={handleLinkClick}>Add Class</Link>
         <Link to="/statistics" className="nav-link" onClick={handleLinkClick}>Statistics</Link>
-        <Link to="/classes" className="nav-link" onClick={handleLinkClick}>Classes</Link>
+        
       </div>
 
       <div className="progress-circle-container">

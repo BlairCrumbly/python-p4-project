@@ -2,7 +2,7 @@ import '../styles/TaskList.css';
 import { useState, useEffect } from 'react';
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
-const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
+const TaskCard = ({task, handleTaskCompletion, priorityClass, handleDeleteTask}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [iconSize, setIconSize] = useState(22);
     
@@ -35,7 +35,7 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
       <div className="task-header">
         <strong className={task.addingLineThrough ? "crossed-out" : ""} style={{ marginRight: '10px' }}>
           {task.title}
-        </strong>- {task.dueDate}
+        </strong> {task.dueDate}
 
         <input
           type="checkbox"
@@ -47,8 +47,7 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
 
       <div className={`task-details ${isOpen ? "open" : "closed"}`}>
         <p>{task.description}</p>
-        <span>Estimated Time: {task.estimatedTime} hrs</span>
-
+        
         {/* Display task categories when the arrow is clicked */}
         {task.categories && task.categories.length > 0 && (
           <div className="task-categories">
@@ -59,7 +58,17 @@ const TaskCard = ({task, handleTaskCompletion, priorityClass}) => {
               ))}
             </ul>
           </div>
-)}
+        )}
+
+        {/* Delete button will be visible when the dropdown is open */}
+        {isOpen && (
+          <button 
+            onClick={() => handleDeleteTask(task.id)} 
+            className="delete-button"
+          >
+            Delete
+          </button>
+        )}
       </div>
     </li>
   );

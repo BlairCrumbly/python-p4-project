@@ -113,7 +113,32 @@ const TaskDisplay = () => {
       setError("There was an issue marking the task as complete.");
     }
   };
+
+  // Define the handleDeleteTask function
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const csrfToken = getCookie("csrf_access_token");
+      const requestHeaders = { "Content-Type": "application/json", "X-CSRF-TOKEN": csrfToken };
   
+      // Send request to the backend to delete the task
+      const response = await fetch(`/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: requestHeaders,
+      });
+  
+      if (response.ok) {
+        // Remove the task from state after successful deletion
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+        alert('Task deleted successfully');
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to delete task');
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      setError("There was an issue deleting the task.");
+    }
+  };
 
   const filteredTasks = tasks.filter((task) => {
     const taskName = (task.name || "").toLowerCase();
@@ -142,7 +167,7 @@ const TaskDisplay = () => {
     <div className="centered-container">
       <div className="TaskList">
         <h1>{klassName}</h1>
-        {error && <p style={{ color: "red", border: "1px solid red", padding: "10px" }}>{error}</p>}
+
   
         {!searchQuery && (
           <div className={`DropDowns ${isMobile ? 'mobile-dropdowns' : ''}`}>
@@ -188,18 +213,20 @@ const TaskDisplay = () => {
                   task={task}
                   priorityClass={taskPriorities[task.id]}
                   handleTaskCompletion={handleTaskCompletion}
+                  handleDeleteTask={handleDeleteTask}
                 />
                 {/* Display task categories */}
                 <div className="task-categories">
-                  
-                  <ul>
+                  <div>
                     {task.categories && task.categories.map((category) => (
-                      <li key={category.id}>
-                        <strong>{category.name}</strong> - {category.category_type}
-                      </li>
+                      <div key={category.id}>
+                        <strong>{category.name}</strong> {category.category_type}
+                        
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
+                
               </div>
             ))}
           </ul>
@@ -209,7 +236,6 @@ const TaskDisplay = () => {
       </div>
     </div>
   );
-  
 };
 
 const checkStatus = (response) => {

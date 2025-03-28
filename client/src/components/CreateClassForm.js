@@ -1,82 +1,113 @@
-import { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { createClass } from "../Auth";  // Import the function to create a class
+import React, { useState } from 'react';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import "../styles/CreateClassForm.css";
 
-// Yup validation schema
-const validationSchema = Yup.object({
-  name: Yup.string().required("Class name is required"),
-  description: Yup.string().required("Class description is required"),
-});
+const CreateClassForm = () => {
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-export default function CreateClassForm() {
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state for form submission
-
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      description: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      try {
-        setLoading(true);  // Set loading to true
-        const data = await createClass(values);  // Call createClass function to create a class
-        if (data.id) {
-          setMessage("Class created successfully!");  // Success message
-        } else {
-          setMessage(data.message || "Failed to create class.");
-        }
-      } catch (error) {
-        setMessage("Error creating class: " + error.message);  // Show detailed error message
-      } finally {
-        setLoading(false);  // Reset loading state
-      }
-    },
+  // Yup Validation Schema
+  const validationSchema = Yup.object({
+    className: Yup.string()
+      .required('Class name is required')
+      .min(3, 'Class name must be at least 3 characters'), 
+    description: Yup.string()
+      .max(200, 'Description must be less than 200 characters') 
   });
 
+  // Handle form submission
+  const handleSubmit = async (values) => {
+    try {
+      const csrfToken = getCookie('csrf_access_token');
+      const classData = {
+        name: values.className,
+        description: values.description,
+      };
+
+      const requestHeaders = {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      };
+
+      const response = await fetch('/classes', {
+        method: 'POST',
+        headers: requestHeaders,
+        credentials: 'include',
+        body: JSON.stringify(classData),
+      });
+
+      // Check if the response is OK
+      if (!response.ok) {
+        setError('');
+        return;
+      }
+
+      // Try parsing JSON if the response is OK
+      try {
+        const newClass = await response.json();
+        navigate(`/classes/${newClass.id}`);
+      } catch (jsonError) {
+        setError('Failed to parse server response');
+      }
+    } catch (error) {
+      setError('An error occurred while creating the class');
+    }
+  };
+
   return (
-    <div>
-      <h2>Create New Class</h2>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Class Name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={loading}  // Disable input during loading
-          />
-          {formik.touched.name && formik.errors.name && (
-            <p>{formik.errors.name}</p>  // Show validation error if any
-          )}
-        </div>
+    <div className="container">
+      <h1>Create New Class</h1>
+      {error && <p className="error-message">{error}</p>}
+      <Formik
+        initialValues={{
+          className: '',
+          description: '',
+        }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        <Form>
+          <div className="form-group">
+            <label htmlFor="className">Class Name:</label>
+            <Field
+              type="text"
+              id="className"
+              name="className"
+              className="form-input"
+              required
+            />
+            <ErrorMessage name="className" component="div" className="error-message" />
+          </div>
 
-        <div>
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Class Description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={loading}  // Disable input during loading
-          />
-          {formik.touched.description && formik.errors.description && (
-            <p>{formik.errors.description}</p>  // Show validation error if any
-          )}
-        </div>
+          <div className="form-group">
+            <label htmlFor="description">Description:</label>
+            <Field
+              as="textarea"
+              id="description"
+              name="description"
+              className="form-input"
+            />
+            <ErrorMessage name="description" component="div" className="error-message" />
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create Class"}  // Show loading text on button
-        </button>
-      </form>
-
-      {message && <p>{message}</p>}  // Display success or error message
+          <div>
+            <button type="submit" className="submit-button">Create Class</button>
+          </div>
+        </Form>
+      </Formik>
     </div>
   );
+};
+
+// Helper function to get the CSRF token from cookies
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+
+  if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
+export default CreateClassForm;

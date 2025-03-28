@@ -7,10 +7,10 @@ import App from "./App";
 import TaskList from "./components/TaskList";
 import AddTaskForm from "./components/AddTaskForm";
 import Statistics from "./components/Statistics";
-import AuthPage from "./components/AuthPage"; // Import login/register component
-import Dashboard from "./components/Dashboard"; // New dashboard component
-import ProtectedRoute from "./components/ProtectedRoute"; // Protect access
-import ClassList from "./components/ClassList"; // Import ClassList component
+import AuthPage from "./components/AuthPage";
+import Dashboard from "./components/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ClassList from "./components/ClassList";
 import CreateClassForm from "./components/CreateClassForm";
 import TaskDisplay from "./components/TaskDisplay";
 const router = createBrowserRouter([

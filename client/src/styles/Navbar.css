@@ -14,7 +14,15 @@ nav {
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
 }
+.App {
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 0px; /* Adjusted space to account for the width of the navbar */
+  padding-top: 20px; /* Optional to add space at the top for any margin */
+}
 
+.App.nav-open {
+  margin-left: 180px;
+}
 
 nav div {
   display: flex;

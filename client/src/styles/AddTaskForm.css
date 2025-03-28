@@ -1,0 +1,65 @@
+/* AddTaskForm.css */
+
+/* General Layout */
+div {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  /* Labels */
+  label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  /* Input Fields */
+  input[type="text"],
+  input[type="date"],
+  select,
+  textarea {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  /* Textarea */
+  textarea {
+    min-height: 100px;
+  }
+  
+  /* Button Styles */
+  button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+
+  
+  /* Error Messages */
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  /* Form Title */
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
